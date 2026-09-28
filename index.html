@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>BFC Attendance</title>
+<script>(function(){try{var l=localStorage.getItem('bfc-theme')==='light';document.documentElement.dataset.theme=l?'light':'dark';}catch(e){}})();</script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0B1410">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BFC">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -47,7 +55,7 @@
 
   /* HEADER */
   .top-header{
-    padding:22px 20px 18px;
+    padding:calc(22px + env(safe-area-inset-top)) 20px 18px;
     position:relative;
     overflow:hidden;
     border-bottom:1px solid var(--border);
@@ -341,7 +349,7 @@
     margin-bottom:16px;
   }
   .copied-toast{
-    position:fixed; top:18px; left:50%; transform:translateX(-50%);
+    position:fixed; top:calc(18px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
     background:var(--gold); color:#1A1408;
     padding:10px 18px; border-radius:30px;
     font-weight:700; font-size:13px;
@@ -419,7 +427,7 @@
   .modal-input{
     width:100%; background:var(--surface-2); border:1px solid var(--border);
     color:var(--text); border-radius:var(--radius-sm); padding:13px 14px;
-    font-family:'Inter',sans-serif; font-size:15px; margin-bottom:14px;
+    font-family:'Inter',sans-serif; font-size:16px; margin-bottom:14px;
   }
   .modal-input:focus{outline:none; border-color:var(--gold);}
   .modal-btns{display:flex; gap:10px;}
@@ -427,6 +435,37 @@
 
   .confirm-text{color:var(--text-muted); font-size:14px; line-height:1.5; margin-bottom:18px;}
 
+  .player-name{cursor:pointer;display:flex;justify-content:space-between;align-items:center;}
+  .player-name small{color:var(--text-muted);font-weight:500;font-size:12px;}
+  textarea.modal-input{resize:none;line-height:1.5;}
+  .install-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--gold-soft);border:1px solid var(--gold);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px;font-size:13.5px;font-weight:600;}
+  .install-banner button{background:var(--gold);color:#1A1408;border:none;border-radius:20px;padding:8px 14px;font-weight:700;cursor:pointer;}
+  .date-row .icon-btn{font-size:22px;padding:2px 12px;color:var(--gold);}
+  .row-btns{display:flex;gap:8px;margin-bottom:6px;}
+  .row-btns .secondary-btn{margin-top:0;font-size:13px;}
+  .tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:4px;margin-bottom:14px;}
+  .tabs button{flex:1;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13.5px;padding:10px;border-radius:8px;cursor:pointer;}
+  .tabs button.on{background:var(--gold);color:#1A1408;}
+  .rep-row{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:13px 14px;margin-bottom:8px;}
+  .rep-top{display:flex;justify-content:space-between;font-weight:600;font-size:15px;margin-bottom:8px;}
+  .bar{height:6px;background:var(--surface-2);border-radius:4px;overflow:hidden;margin-bottom:7px;}
+  .bar i{display:block;height:100%;border-radius:4px;}
+  .rep-row .cat-meta{margin:0;}
+  
+  :root{--late:#E8934A; color-scheme:dark;}
+  [data-theme="light"]{--bg:#F2F5F1;--surface:#FFFFFF;--surface-2:#E8EEE8;--border:#D3DDD4;--text:#15221A;--text-muted:#5B6F61;--gold:#9A6B12;--gold-soft:rgba(154,107,18,.13);--present:#2A8A50;--absent:#C4453A;--late:#C9711F;color-scheme:light;}
+  [data-theme="light"] .top-header{background:linear-gradient(180deg,#E3ECE3,var(--bg));}
+  [data-theme="light"] .bottom-nav{background:rgba(255,255,255,.93);}
+  [data-theme="light"] .sticky-bottom{background:linear-gradient(0deg,var(--bg) 60%,rgba(242,245,241,0));}
+  [data-theme="light"] .date-row input[type="date"]::-webkit-calendar-picker-indicator{filter:none;}
+  [data-theme="light"] .primary-btn,[data-theme="light"] .mark-all-btn,[data-theme="light"] .tabs button.on,[data-theme="light"] .chip.on,[data-theme="light"] .install-banner button,[data-theme="light"] .copied-toast{color:#fff;}
+  .status-btn.late.active{background:rgba(232,147,74,.16);border-color:var(--late);color:var(--late);}
+  .player-row.is-late{border-color:rgba(232,147,74,.45);}
+  .status-btn.note{flex:0 0 46px;padding:12px 0;}
+  .note-line{font-size:12.5px;color:var(--text-muted);font-style:italic;margin:-4px 0 10px;cursor:pointer;}
+  .chips{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+  .chip{background:var(--surface);border:1px solid var(--border);color:var(--text-muted);border-radius:20px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer;}
+  .chip.on{background:var(--gold);border-color:var(--gold);color:#1A1408;}
   a, button{font-family:inherit;}
 </style>
 </head>
@@ -481,11 +520,17 @@ function loadData(){
 
   // Create the first history entry so the Android back button has
   // somewhere to land on instead of immediately closing the app.
-  history.replaceState(
-    { screen: 'home' },
-    '',
-    location.href
-  );
+  try {
+    history.replaceState(
+      { screen: 'home' },
+      '',
+      location.href
+    );
+  } catch(e) {
+    // Safari blocks history.replaceState() on file:// pages (SecurityError).
+    // Safe to ignore - it only affects Android-style back-button navigation.
+    console.warn('replaceState skipped:', e);
+  }
 
   render();
 }
@@ -523,6 +568,7 @@ function render(preserveScroll){
     app.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;color:var(--text-muted);font-family:'Oswald',sans-serif;letter-spacing:2px;">LOADING BFC…</div>`;
     return;
   }
+  if (view.catId && !state.categories.find(c=>c.id===view.catId)) view = { screen:'home' };
   let html = '';
   switch(view.screen){
     case 'home': html = renderHome(); break;
@@ -531,6 +577,7 @@ function render(preserveScroll){
     case 'history': html = renderHistoryList(); break;
     case 'historyDetail': html = renderHistoryDetail(); break;
     case 'manage': html = renderManageCategories(); break;
+    case 'report': html = renderReport(); break;
     case 'managePlayers': html = renderManagePlayers(); break;
     default: html = renderHome();
   }
@@ -549,11 +596,17 @@ function setView(v, addHistory = true){
   view = Object.assign({}, v);
 
   if (addHistory) {
-    history.pushState(
-      { screen: view.screen, catId: view.catId || null },
-      '',
-      location.href
-    );
+    try {
+      history.pushState(
+        { screen: view.screen, catId: view.catId || null },
+        '',
+        location.href
+      );
+    } catch(e) {
+      // Safari blocks history.pushState() on file:// pages (SecurityError).
+      // Safe to ignore - it only affects Android-style back-button navigation.
+      console.warn('pushState skipped:', e);
+    }
   }
 
   render();
@@ -574,7 +627,7 @@ window.addEventListener('popstate', function(event) {
 
   if (previous && previous.screen) {
     view = {
-      screen: previous.screen,
+      screen: previous.screen==='historyDetail' ? 'history' : previous.screen==='generate' ? 'home' : previous.screen,
       ...(previous.catId ? { catId: previous.catId } : {})
     };
 
@@ -587,10 +640,13 @@ window.addEventListener('popstate', function(event) {
       if (existing) {
         existing.present.forEach(id => statusMap[id] = 'present');
         existing.absent.forEach(id => statusMap[id] = 'absent');
+    (existing.late||[]).forEach(id => statusMap[id] = 'late');
       }
 
       view.date = date;
       view.statusMap = statusMap;
+      view.stype = (existing&&existing.type)||'Training';
+      view.notes = Object.assign({},(existing&&existing.notes)||{});
     }
 
     render();
@@ -616,7 +672,7 @@ function renderHome(){
           <div class="ball-badge">⚽</div>
           <div>
             <div class="cat-name">${esc(c.name)}</div>
-            <div class="cat-meta">${count} player${count!==1?'s':''}</div>
+            <div class="cat-meta">${(()=>{const t=findSession(c.id,todayISO());return t?`<span style="color:var(--present);font-weight:600">✓ Taken today · ${t.present.length}/${count} present</span>`:`${count} player${count!==1?'s':''} · Tap to take attendance`})()}</div>
           </div>
         </div>
         <div class="cat-arrow">›</div>
@@ -630,12 +686,12 @@ function renderHome(){
     <div class="brand-row">
       <div>
         <div class="brand">BFC</div>
-        <div class="brand-sub">Training Attendance</div>
+        <div class="brand-sub">Training Attendance</div></div><button class="back-btn" onclick="toggleTheme()">${themeIcon()}</button><div>
       </div>
     </div>
   </div>
   <div class="content">
-    <div class="history-group-title" style="margin-top:4px;">Today's Sessions</div>
+    ${reminderBanners()}${installBanner()}<div class="history-group-title" style="margin-top:4px;">Today's Sessions</div>
     ${list}
   </div>
   ${renderBottomNav('home')}
@@ -727,7 +783,7 @@ function submitDeleteCategory(catId){
   delete state.players[catId];
   delete state.sessions[catId];
   saveData();
-  closeModal();
+  view.modal = null;
   setView({screen:'manage'});
 }
 function closeModal(){ view.modal = null; render(); }
@@ -740,14 +796,16 @@ function openCategory(catId){
   if (existing){
     existing.present.forEach(id => statusMap[id] = 'present');
     existing.absent.forEach(id => statusMap[id] = 'absent');
+    (existing.late||[]).forEach(id => statusMap[id] = 'late');
   }
-  setView({ screen:'attendance', catId, date, statusMap });
+  setView({ screen:'attendance', catId, date, statusMap, stype:(existing&&existing.type)||'Training', notes:Object.assign({},(existing&&existing.notes)||{}) });
 }
 function renderAttendance(){
   const cat = state.categories.find(c=>c.id===view.catId);
   const players = playersOf(view.catId);
   const statusMap = view.statusMap;
-  const presentCount = players.filter(p=>statusMap[p.id]==='present').length;
+  const presentCount = players.filter(p=>statusMap[p.id]==='present'||statusMap[p.id]==='late').length;
+  const lateCount = players.filter(p=>statusMap[p.id]==='late').length;
   const absentCount = players.filter(p=>statusMap[p.id]==='absent').length;
 
   if (players.length === 0){
@@ -773,11 +831,14 @@ function renderAttendance(){
 
   const rows = players.map(p => {
     const s = statusMap[p.id];
-    return `<div class="player-row ${s==='present'?'is-present':''} ${s==='absent'?'is-absent':''}">
-      <div class="player-name">${esc(p.name)}</div>
+    return `<div class="player-row ${s==='present'?'is-present':''} ${s==='late'?'is-late':''} ${s==='absent'?'is-absent':''}">
+      <div class="player-name" onclick="cycleStatus('${p.id}')"><span>${esc(p.name)}</span><small>${s==='present'?'✓':s==='late'?'⏰':s==='absent'?'✕':''}</small></div>
+      ${(view.notes&&view.notes[p.id])?`<div class="note-line" onclick="openNoteModal('${p.id}')">📝 ${esc(view.notes[p.id])}</div>`:''}
       <div class="status-btns">
         <button class="status-btn present ${s==='present'?'active':''}" onclick="setStatus('${p.id}','present')">✓ Present</button>
+        <button class="status-btn late ${s==='late'?'active':''}" onclick="setStatus('${p.id}','late')">⏰ Late</button>
         <button class="status-btn absent ${s==='absent'?'active':''}" onclick="setStatus('${p.id}','absent')">✕ Absent</button>
+        <button class="status-btn note" onclick="openNoteModal('${p.id}')">📝</button>
       </div>
     </div>`;
   }).join('');
@@ -790,17 +851,18 @@ function renderAttendance(){
     </div>
     <div class="header-title" style="margin-top:10px;">
       <div class="screen-title">${esc(cat.name)}</div>
-      <div class="screen-sub">Training session</div>
+      <div class="screen-sub">Tap a name: present → late → absent</div>
     </div>
   </div>
   <div class="content no-nav" style="padding-bottom:110px;">
+    <div class="chips">${TYPES.map(t=>`<button class="chip ${(view.stype||'Training')===t?'on':''}" onclick="setType('${t}')">${t}</button>`).join('')}</div>
     <div class="date-row">
-      📅 <input type="date" value="${view.date}" onchange="changeDate(this.value)">
+      <button class="icon-btn" onclick="shiftDate(-1)">‹</button><input type="date" value="${view.date}" onchange="changeDate(this.value)" style="text-align:center"><button class="icon-btn" onclick="shiftDate(1)">›</button>
     </div>
     <div class="scoreboard">
       <div>
         <div class="score-main">${presentCount} / ${players.length}</div>
-        <div class="score-label">Present</div>
+        <div class="score-label">Present${lateCount?` (${lateCount} late)`:''}</div>
       </div>
       <div class="score-absent">${absentCount}<small>Absent</small></div>
     </div>
@@ -813,7 +875,7 @@ function renderAttendance(){
         <div class="toggle-knob"></div>
       </div>
     </div>
-    <button class="mark-all-btn" onclick="markAllPresent()">✓ Mark All Present</button>
+    <div class="row-btns"><button class="mark-all-btn" style="margin:0" onclick="markAllPresent()">✓ All present</button><button class="secondary-btn" style="width:40%" onclick="clearAll()">Clear</button></div><div style="height:10px"></div>
     ${rows}
   </div>
   <div class="sticky-bottom">
@@ -828,11 +890,15 @@ function changeDate(newDate){
   if (existing){
     existing.present.forEach(id => statusMap[id]='present');
     existing.absent.forEach(id => statusMap[id]='absent');
+    (existing.late||[]).forEach(id => statusMap[id]='late');
   }
   view.statusMap = statusMap;
+  view.stype = (existing&&existing.type)||'Training';
+  view.notes = Object.assign({},(existing&&existing.notes)||{});
   render();
 }
 function setStatus(playerId, status){
+  vib();
   view.statusMap[playerId] = (view.statusMap[playerId] === status) ? undefined : status;
   if (view.statusMap[playerId] === undefined) delete view.statusMap[playerId];
   persistDraftSession();
@@ -852,17 +918,18 @@ function toggleIncludeAbsent(){
 }
 function persistDraftSession(){
   const players = playersOf(view.catId);
-  const present = players.filter(p=>view.statusMap[p.id]==='present').map(p=>p.id);
+  const present = players.filter(p=>['present','late'].includes(view.statusMap[p.id])).map(p=>p.id);
+  const late = players.filter(p=>view.statusMap[p.id]==='late').map(p=>p.id);
   const absent = players.filter(p=>view.statusMap[p.id]==='absent').map(p=>p.id);
   if (present.length===0 && absent.length===0) return;
   let list = state.sessions[view.catId] || (state.sessions[view.catId] = []);
   let existing = list.find(s=>s.date===view.date);
   if (existing){
     existing.present = present;
-    existing.absent = absent;
+    existing.absent = absent; existing.late = late; existing.type = view.stype||'Training'; existing.notes = view.notes||{};
     existing.timestamp = Date.now();
   } else {
-    list.push({ id: uid(), date: view.date, present, absent, timestamp: Date.now() });
+    list.push({ id: uid(), date: view.date, present, absent, late, type: view.stype||'Training', notes: view.notes||{}, timestamp: Date.now() });
   }
   saveData();
 }
@@ -872,18 +939,20 @@ function generateAttendance(){
   persistDraftSession();
   const cat = state.categories.find(c=>c.id===view.catId);
   const players = playersOf(view.catId);
-  const presentPlayers = players.filter(p=>view.statusMap[p.id]==='present');
+  const presentPlayers = players.filter(p=>['present','late'].includes(view.statusMap[p.id]));
   const absentPlayers = players.filter(p=>view.statusMap[p.id]==='absent');
   const lines = [
-    `BFC ${cat.name} — Training Attendance`,
+    `BFC ${cat.name} — ${view.stype||'Training'} Attendance`,
     `📅 ${formatDateSlash(view.date)}`,
     ``,
     `Present (${presentPlayers.length}):`,
-    ...presentPlayers.map(p=>p.name)
+    ...presentPlayers.map(p=>p.name + (view.statusMap[p.id]==='late'?' (late)':''))
   ];
   if (cat.includeAbsent){
     lines.push(``, `Absent (${absentPlayers.length}):`, ...absentPlayers.map(p=>p.name));
   }
+  const noted = players.filter(p=>view.notes&&view.notes[p.id]);
+  if (noted.length) lines.push(``, `Notes:`, ...noted.map(p=>`${p.name}: ${view.notes[p.id]}`));
   const text = lines.join('\n');
   setView({ screen:'generate', catId: view.catId, date: view.date, text });
 }
@@ -903,7 +972,8 @@ function renderGenerate(){
   <div class="content no-nav">
     <div class="output-box" id="outputText">${esc(view.text)}</div>
     <button class="primary-btn" onclick="copyText()">📋 Copy Text</button>
-    <button class="secondary-btn" onclick="shareText()">📤 Share</button>
+    <button class="secondary-btn" onclick="window.open('https://wa.me/?text='+encodeURIComponent(view.text))">💬 Send to WhatsApp</button>
+    <button class="secondary-btn" onclick="shareText()">📤 Share…</button>
     <button class="secondary-btn" onclick="navTo('home')">Done</button>
   </div>
   `;
@@ -955,11 +1025,11 @@ function renderHistoryList(){
         const ratio = total ? s.present.length/total : 0;
         const badgeClass = ratio >= 0.9 ? 'badge-full' : ratio >= 0.6 ? 'badge-partial' : 'badge-low';
         return `<div class="session-row" onclick="openHistoryDetail('${cat.id}','${s.id}')">
-          <div class="session-date">${formatDateLong(s.date)}</div>
+          <div class="session-date">${formatDateLong(s.date)}${s.type&&s.type!=='Training'?` <span style="color:var(--gold);font-size:12px">· ${esc(s.type)}</span>`:''}</div>
           <div class="session-badge ${badgeClass}">${s.present.length} / ${total}</div>
         </div>`;
       }).join('');
-      return `<div class="history-group-title">${esc(cat.name)}</div>${rows}`;
+      return `<div class="history-group-title" style="display:flex;justify-content:space-between"><span>${esc(cat.name)}</span><span style="color:var(--gold);cursor:pointer" onclick="openReport('${cat.id}')">📊 Report</span></div>${rows}`;
     }).join('');
     if (!body.trim()){
       body = `<div class="empty-state"><div class="icon">📅</div><h3>No sessions yet</h3><p>Take attendance for a team and it will appear here.</p></div>`;
@@ -982,8 +1052,9 @@ function renderHistoryDetail(){
   const session = view.session;
   const players = playersOf(view.catId);
   const nameOf = id => { const p = players.find(pp=>pp.id===id); return p ? p.name : '(removed player)'; };
-  const presentNames = session.present.map(nameOf);
-  const absentNames = session.absent.map(nameOf);
+  const tag = id => ((session.late||[]).includes(id)?' ⏰ late':'') + (session.notes&&session.notes[id]?' — '+session.notes[id]:'');
+  const presentNames = session.present.map(id=>nameOf(id)+tag(id));
+  const absentNames = session.absent.map(id=>nameOf(id)+tag(id));
   const total = presentNames.length + absentNames.length;
   return `
   <div class="top-header">
@@ -993,10 +1064,11 @@ function renderHistoryDetail(){
     </div>
     <div class="header-title" style="margin-top:10px;">
       <div class="screen-title">${esc(cat.name)}</div>
-      <div class="screen-sub">${formatDateLong(session.date)} · ${presentNames.length}/${total} present</div>
+      <div class="screen-sub">${esc(session.type||'Training')} · ${formatDateLong(session.date)} · ${presentNames.length}/${total} present</div>
     </div>
   </div>
   <div class="content no-nav">
+    <div class="row-btns"><button class="secondary-btn" onclick="editSession()">✎ Edit</button><button class="secondary-btn" style="color:var(--absent)" onclick="deleteSession()">🗑 Delete</button></div>
     <div class="detail-list-title" style="color:var(--present);">✓ Present (${presentNames.length})</div>
     ${presentNames.length ? presentNames.map(n=>`<div class="detail-player">🟢 ${esc(n)}</div>`).join('') : `<div class="confirm-text">None recorded.</div>`}
     <div class="detail-list-title" style="color:var(--absent);">✕ Absent (${absentNames.length})</div>
@@ -1029,6 +1101,11 @@ function renderManageCategories(){
   <div class="content">
     ${rows}
     <button class="add-btn" onclick="openAddCategoryModal()">＋ Add Category</button>
+    <div class="history-group-title">Your data</div>
+    <div class="row-btns"><button class="secondary-btn" onclick="exportData()">⬇ Save backup</button><label class="secondary-btn" style="display:block;position:relative;text-align:center;cursor:pointer">⬆ Restore<input type="file" id="importFile" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer" onchange="importData(this)"></label></div>
+    <div class="row-btns" style="margin-top:8px"><button class="secondary-btn" onclick="copyBackup()">📋 Copy backup text</button><button class="secondary-btn" onclick="openPasteRestore()">📥 Paste to restore</button></div>
+    <div class="cat-meta">Data lives on this phone only. Save a backup now and then.</div>
+    
   </div>
   ${renderBottomNav('manage')}
   `;
@@ -1038,7 +1115,7 @@ function renderManagePlayers(){
   const players = playersOf(view.catId);
   const rows = players.length ? players.map(p => `
     <div class="manage-player-row">
-      <div>${esc(p.name)}</div>
+      <div>${esc(p.name)} <small style="color:var(--text-muted)">${rateOf(view.catId,p.id)}</small></div>
       <div>
         <button class="icon-btn" onclick="openEditPlayerModal('${p.id}')">✎</button>
         <button class="icon-btn danger" onclick="confirmDeletePlayer('${p.id}')">🗑</button>
@@ -1059,6 +1136,7 @@ function renderManagePlayers(){
   <div class="content no-nav">
     ${rows}
     <button class="add-btn" onclick="openAddPlayerModal()">＋ Add Player</button>
+    <button class="secondary-btn" onclick="openScheduleModal('${view.catId}')">🔔 Training days &amp; reminder${(cat.days&&cat.days.length)?' · '+cat.days.map(d=>DAYS[d]).join(', '):''}</button>
     <button class="secondary-btn" onclick="openRenameCategoryModal('${view.catId}')">✎ Rename Category</button>
     <button class="secondary-btn" style="color:var(--absent); border-color:rgba(224,104,92,0.3);" onclick="confirmDeleteCategory('${view.catId}')">🗑 Delete Category</button>
   </div>
@@ -1068,7 +1146,7 @@ function openAddPlayerModal(){
   view.modal = `<div class="modal-overlay" onclick="if(event.target===this) closeModal()">
     <div class="modal-sheet">
       <div class="modal-title">Add Player</div>
-      <input id="playerInput" class="modal-input" placeholder="Player name" autofocus>
+      <textarea id="playerInput" class="modal-input" rows="5" placeholder="Type a name, or paste a list — one name per line"></textarea>
       <div class="modal-btns">
         <button class="secondary-btn" style="flex:1" onclick="closeModal()">Cancel</button>
         <button class="primary-btn" style="flex:1" onclick="submitAddPlayer()">Save</button>
@@ -1076,14 +1154,14 @@ function openAddPlayerModal(){
     </div>
   </div>`;
   render();
-  setTimeout(()=>{ const el = document.getElementById('playerInput'); if(el){ el.focus(); el.addEventListener('keydown', e=>{ if(e.key==='Enter') submitAddPlayer(); }); } }, 50);
+  setTimeout(()=>{ const el = document.getElementById('playerInput'); if(el){ el.focus(); } }, 50);
 }
 function submitAddPlayer(){
   const el = document.getElementById('playerInput');
   const val = el.value.trim();
   if (!val) return;
   state.players[view.catId] = state.players[view.catId] || [];
-  state.players[view.catId].push({ id: uid(), name: val });
+  val.split('\n').map(n=>n.trim()).filter(Boolean).forEach(n=>state.players[view.catId].push({ id: uid(), name: n }));
   saveData();
   closeModal();
   render();
@@ -1133,6 +1211,262 @@ function submitDeletePlayer(playerId){
   closeModal();
   render();
 }
+
+// ---------- REPORTS & STREAKS ----------
+function openReport(catId){ setView({screen:'report', catId, month:todayISO().slice(0,7), tab:'month'}); }
+function shiftMonth(n){
+  const [y,m]=view.month.split('-').map(Number);
+  const d=new Date(y,m-1+n,1);
+  view.month=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'); render(true);
+}
+function playerStats(catId,pid,month,rtype){
+  const l=(state.sessions[catId]||[]).filter(s=>(s.present.includes(pid)||s.absent.includes(pid))&&(!rtype||rtype==='All'||(s.type||'Training')===rtype)).sort((a,b)=>a.date.localeCompare(b.date));
+  const inM=l.filter(s=>s.date.startsWith(month));
+  const isP=s=>s.present.includes(pid);
+  let run=0,best=0; l.forEach(s=>{ if(isP(s)){run++; best=Math.max(best,run);} else run=0; });
+  let miss=0; for(let i=l.length-1;i>=0&&!isP(l[i]);i--) miss++;
+  return {mt:inM.length, mp:inM.filter(isP).length, at:l.length, ap:l.filter(isP).length, cur:run, best, miss};
+}
+function capName(n){ return String(n).trim().replace(/\S+/g,w=>w.charAt(0).toUpperCase()+w.slice(1)); }
+function buildReportText(cat,label,rtype,sess,list,avg){
+  const pc=r=>r.st.mt?Math.round(r.st.mp/r.st.mt*100):0;
+  const bar=(v,sq)=>{ const n=Math.round(v/20); return sq.repeat(n)+'⬜'.repeat(5-n); };
+  const line=(r,sq)=>`${bar(pc(r),sq)} ${capName(r.p.name)} · ${pc(r)}% (${r.st.mp} of ${r.st.mt})`;
+  const g=(a,b)=>list.filter(r=>pc(r)>=a&&pc(r)<=b);
+  const groups=[['🟢','Excellent (80% and above)',g(80,100),'🟩'],['🟡','Good (50–79%)',g(50,79),'🟨'],['🔴','Needs attention (below 50%)',g(0,49),'🟥']];
+  const face=avg>=80?'🟢':avg>=50?'🟡':'🔴';
+  const out=[`⚽ *BFC ${cat.name} — Attendance Report*`,`📅 ${label}${rtype!=='All'?' · '+rtype+' sessions':''}`,'',`📊 *Summary*`,`• Sessions held: ${sess.length}`,`• Team average: ${avg}% ${face}`,`• Players: ${list.length}`];
+  groups.forEach(([ic,title,arr,sq])=>{ if(!arr.length) return;
+    out.push('','━━━━━━━━━━━━━━',`${ic} *${title}* — ${arr.length} player${arr.length>1?'s':''}`,...arr.map(r=>line(r,sq))); });
+  return out.join('\n');
+}
+function renderReport(){
+  const cat=state.categories.find(c=>c.id===view.catId);
+  const month=view.month||todayISO().slice(0,7), tab=view.tab||'month';
+  const [y,m]=month.split('-').map(Number);
+  const label=new Date(y,m-1,1).toLocaleDateString('en-GB',{month:'long',year:'numeric'});
+  const rtype=view.rtype||'All';
+  const sess=sessionsOf(view.catId).filter(x=>x.date.startsWith(month)&&(rtype==='All'||(x.type||'Training')===rtype));
+  const tot=sess.reduce((a,x)=>a+x.present.length+x.absent.length,0);
+  const pres=sess.reduce((a,x)=>a+x.present.length,0);
+  const pct=(a,b)=>b?Math.round(a/b*100):0;
+  const col=v=>v>=80?'var(--present)':v>=50?'var(--gold)':'var(--absent)';
+  const rows=playersOf(view.catId).map(p=>({p,st:playerStats(view.catId,p.id,month,rtype)}));
+  const row=(name,v,right,meta)=>`<div class="rep-row"><div class="rep-top"><span>${esc(name)}</span><b style="color:${col(v)}">${right}</b></div><div class="bar"><i style="width:${v}%;background:${col(v)}"></i></div><div class="cat-meta">${meta}</div></div>`;
+  let body='', text='';
+  if(tab==='month'){
+    const list=rows.filter(r=>r.st.mt>0).sort((a,b)=>pct(b.st.mp,b.st.mt)-pct(a.st.mp,a.st.mt)||a.p.name.localeCompare(b.p.name));
+    view.text=buildReportText(cat,label,rtype,sess,list,pct(pres,tot));
+    body = list.length ? `<div class="scoreboard"><div><div class="score-main">${pct(pres,tot)}%</div><div class="score-label">Average attendance</div></div><div class="score-absent" style="color:var(--gold)">${sess.length}<small>Sessions</small></div></div>`
+      + list.map(r=>{const v=pct(r.st.mp,r.st.mt); return row(r.p.name,v,v+'%',`${r.st.mp} of ${r.st.mt} sessions`);}).join('')
+      + `<button class="primary-btn" style="margin-top:8px" onclick="copyText()">📋 Copy report</button><button class="secondary-btn" onclick="window.open('https://wa.me/?text='+encodeURIComponent(view.text))">💬 Send to WhatsApp</button>`
+      : `<div class="empty-state"><div class="icon">📊</div><h3>No sessions in ${label}</h3><p>Take attendance and this month's report will fill in.</p></div>`;
+  } else {
+    const list=rows.filter(r=>r.st.at>0).sort((a,b)=>b.st.cur-a.st.cur||b.st.ap/b.st.at-a.st.ap/a.st.at);
+    body = list.length ? list.map(r=>{const v=pct(r.st.ap,r.st.at); const warn=r.st.miss>=2?` · <span style="color:var(--absent);font-weight:600">Missed last ${r.st.miss}</span>`:''; return row(r.p.name,v,r.st.cur?`🔥 ${r.st.cur}`:'–',`Best streak ${r.st.best} · ${v}% overall${warn}`);}).join('')
+      : `<div class="empty-state"><div class="icon">🔥</div><h3>No streaks yet</h3><p>Streaks appear after a few sessions are recorded.</p></div>`;
+  }
+  return `
+  <div class="top-header">
+    <div class="brand-row"><button class="back-btn" onclick="history.back()">‹</button><div></div></div>
+    <div class="header-title" style="margin-top:10px;"><div class="screen-title">${esc(cat.name)}</div><div class="screen-sub">${tab==='month'?'Monthly report':'Attendance streaks (all time)'}</div></div>
+  </div>
+  <div class="content no-nav">
+    <div class="tabs"><button class="${tab==='month'?'on':''}" onclick="view.tab='month';render(true)">Month</button><button class="${tab==='streaks'?'on':''}" onclick="view.tab='streaks';render(true)">🔥 Streaks</button></div>
+    <div class="chips">${['All',...TYPES].map(t=>`<button class="chip ${rtype===t?'on':''}" onclick="view.rtype='${t}';render(true)">${t}</button>`).join('')}</div>
+    ${tab==='month'?`<div class="date-row"><button class="icon-btn" onclick="shiftMonth(-1)">‹</button><div style="flex:1;text-align:center;font-weight:600">${label}</div><button class="icon-btn" onclick="shiftMonth(1)">›</button></div>`:''}
+    ${body}
+  </div>`;
+}
+
+// ---------- THEME / TYPES / NOTES / REMINDERS ----------
+const TYPES=['Training','Match','Friendly'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function themeIcon(){ return document.documentElement.dataset.theme==='light' ? '🌙' : '☀️'; }
+function toggleTheme(){
+  const light = document.documentElement.dataset.theme!=='light';
+  document.documentElement.dataset.theme = light?'light':'dark';
+  try{ localStorage.setItem('bfc-theme', light?'light':'dark'); }catch(e){}
+  const m=document.querySelector('meta[name=theme-color]'); if(m) m.content = light?'#F2F5F1':'#0B1410';
+  render(true);
+}
+function setType(t){ view.stype=t; persistDraftSession(); render(true); }
+function openNoteModal(pid){
+  const p=playersOf(view.catId).find(x=>x.id===pid);
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeNote()">
+    <div class="modal-sheet"><div class="modal-title">Note · ${esc(p.name)}</div>
+      <textarea id="noteInput" class="modal-input" rows="3" placeholder="e.g. injured, left early, sick">${esc((view.notes&&view.notes[pid])||'')}</textarea>
+      <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeNote()">Cancel</button><button class="primary-btn" style="flex:1" onclick="saveNote('${pid}')">Save</button></div>
+    </div></div>`;
+  render(true);
+  setTimeout(()=>{ const el=document.getElementById('noteInput'); if(el) el.focus(); },50);
+}
+function closeNote(){ view.modal=null; render(true); }
+function saveNote(pid){
+  const v=document.getElementById('noteInput').value.trim();
+  view.notes=view.notes||{};
+  if(v) view.notes[pid]=v; else delete view.notes[pid];
+  persistDraftSession(); view.modal=null; render(true);
+}
+function openScheduleModal(catId){
+  const c=state.categories.find(x=>x.id===catId);
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-sheet"><div class="modal-title">Training days</div>
+      <div class="chips" id="dayChips">${[1,2,3,4,5,6,0].map(d=>`<button class="chip ${c.days&&c.days.includes(d)?'on':''}" data-d="${d}" onclick="this.classList.toggle('on')">${DAYS[d]}</button>`).join('')}</div>
+      <input id="timeInput" type="time" class="modal-input" value="${c.time||'17:00'}">
+      <div class="confirm-text">Home shows a reminder on these days. Calendar alerts ring on your iPhone 1 hour and 15 minutes before.</div>
+      <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeModal()">Cancel</button><button class="primary-btn" style="flex:1" onclick="saveSchedule('${catId}')">Save</button></div>
+      <button class="secondary-btn" onclick="saveSchedule('${catId}',true)">📲 Save &amp; add Calendar alerts (1 hour + 15 min)</button>
+    </div></div>`;
+  render(true);
+}
+function saveSchedule(catId,cal){
+  const c=state.categories.find(x=>x.id===catId);
+  const days=[...document.querySelectorAll('#dayChips .chip.on')].map(b=>+b.dataset.d);
+  if(cal && !days.length){ toast('Pick at least one day'); return; }
+  c.days=days;
+  c.time=document.getElementById('timeInput').value||'17:00';
+  saveData();
+  if(cal) addToCalendar(c);
+  view.modal=null; render(true);
+  if(!cal) toast('Reminder saved ✓');
+}
+function icsDate(d,t){ return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'T'+t.replace(':','')+'00'; }
+function addToCalendar(c){
+  const t=c.time||'17:00', [hh,mm]=t.split(':').map(Number), tot=hh*60+mm+90;
+  const endT=String(Math.floor(tot/60)%24).padStart(2,'0')+':'+String(tot%60).padStart(2,'0');
+  const codes=['SU','MO','TU','WE','TH','FR','SA'];
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const alarm=(m,txt)=>['BEGIN:VALARM','TRIGGER:-PT'+m+'M','ACTION:DISPLAY','DESCRIPTION:'+txt,'END:VALARM'];
+  const ev=(c.days||[]).map(d=>{
+    const n=new Date(); n.setDate(n.getDate()+((d-n.getDay()+7)%7));
+    return ['BEGIN:VEVENT','UID:bfc-'+c.id+'-'+d+'@bfc-attendance','DTSTAMP:'+stamp,
+      'DTSTART:'+icsDate(n,t),'DTEND:'+icsDate(n,endT),'RRULE:FREQ=WEEKLY;BYDAY='+codes[d],
+      'SUMMARY:⚽ BFC '+c.name+' training','DESCRIPTION:Training session for '+c.name+' at '+t,
+      ...alarm(60,'BFC '+c.name+' training in 1 hour'),...alarm(15,'BFC '+c.name+' training in 15 minutes'),'END:VEVENT'].join('\r\n');
+  });
+  const ics=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//BFC Attendance//EN','CALSCALE:GREGORIAN',...ev,'END:VCALENDAR'].join('\r\n');
+  const file=new File([ics],'bfc-'+c.name.replace(/\W+/g,'-')+'-training.ics',{type:'text/calendar'});
+  if(navigator.canShare && navigator.canShare({files:[file]})){ navigator.share({files:[file]}).catch(()=>{}); return; }
+  const a=document.createElement('a'); a.href=URL.createObjectURL(file); a.download=file.name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function reminderBanners(){
+  const now=new Date(), dow=now.getDay(), today=todayISO();
+  const hm=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  return state.categories.filter(c=>c.days&&c.days.includes(dow)&&!findSession(c.id,today)&&playersOf(c.id).length).map(c=>{
+    const t=c.time||'17:00';
+    return `<div class="install-banner" style="cursor:pointer" onclick="openCategory('${c.id}')"><span>🔔 ${esc(c.name)} ${hm>=t?'— attendance not taken yet':'trains today at '+t}</span><button>Take</button></div>`;
+  }).join('');
+}
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden && view.screen==='home' && !view.modal) render(true); });
+
+// ---------- extras ----------
+function vib(){ try{ navigator.vibrate && navigator.vibrate(12); }catch(e){} }
+function toast(msg,ms){
+  const t=document.createElement('div'); t.className='copied-toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),ms||1600);
+}
+function cycleStatus(id){
+  const s=view.statusMap[id];
+  if(!s) view.statusMap[id]='present'; else if(s==='present') view.statusMap[id]='late'; else if(s==='late') view.statusMap[id]='absent'; else delete view.statusMap[id];
+  vib(); persistDraftSession(); render(true);
+}
+function askConfirm(title,text,label,fn){
+  view.confirmFn=fn;
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeNote()">
+    <div class="modal-sheet"><div class="modal-title">${esc(title)}</div><div class="confirm-text">${esc(text)}</div>
+    <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeNote()">Cancel</button>
+    <button class="primary-btn" style="flex:1;background:var(--absent);box-shadow:none;color:#fff" onclick="runConfirm()">${esc(label)}</button></div></div></div>`;
+  render(true);
+}
+function runConfirm(){ const f=view.confirmFn; view.modal=null; view.confirmFn=null; if(f) f(); }
+function clearAll(){ askConfirm('Clear this date?','All marks and notes for '+formatDateLong(view.date)+' will be removed.','Clear',doClear); }
+function doClear(){
+  view.statusMap={}; view.notes={};
+  state.sessions[view.catId]=(state.sessions[view.catId]||[]).filter(x=>x.date!==view.date);
+  saveData(); render(true); toast('Cleared');
+}
+function shiftDate(n){
+  const [y,m,d]=view.date.split('-').map(Number);
+  const dt=new Date(y,m-1,d+n);
+  changeDate(dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0'));
+}
+function rateOf(catId,pid){
+  let t=0,p=0;
+  (state.sessions[catId]||[]).forEach(s=>{ if(s.present.includes(pid)){t++;p++;} else if(s.absent.includes(pid)) t++; });
+  return t ? Math.round(p/t*100)+'% attended' : '';
+}
+function editSession(){
+  const d=view.session.date, c=view.catId;
+  setView({screen:'attendance',catId:c,date:d,statusMap:{}}); changeDate(d);
+}
+function deleteSession(){ askConfirm('Delete this session?','It will be removed from history.','Delete',doDeleteSession); }
+function doDeleteSession(){
+  state.sessions[view.catId]=state.sessions[view.catId].filter(s=>s.id!==view.sessionId);
+  saveData(); setView({screen:'history'}); toast('Session deleted');
+}
+function exportData(){
+  const json=JSON.stringify(state,null,1), name='bfc-backup-'+todayISO();
+  const files=[new File([json],name+'.json',{type:'application/json'}), new File([json],name+'.txt',{type:'text/plain'})];
+  const f=(navigator.canShare && navigator.share) ? files.find(x=>{ try{ return navigator.canShare({files:[x]}); }catch(e){ return false; } }) : null;
+  const download=()=>{
+    const a=document.createElement('a'); a.href=URL.createObjectURL(files[0]); a.download=name+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Backup saved to Downloads. If nothing appears, use “Copy backup text”.',3500);
+  };
+  if(f){ navigator.share({files:[f],title:'BFC backup'}).then(()=>toast('Backup shared ✓')).catch(e=>{ if(!e||e.name!=='AbortError') download(); }); }
+  else download();
+}
+function restoreFromText(txt){
+  let d; try{
+    d=JSON.parse(String(txt).trim());
+    if(!d || !Array.isArray(d.categories) || !d.categories.every(c=>c && c.id && typeof c.name==='string')) throw 0;
+  }catch(e){ toast('That is not a BFC backup',2500); return; }
+  const pl=d.players||{}, se=d.sessions||{};
+  d.categories.forEach(c=>{ if(!Array.isArray(pl[c.id])) pl[c.id]=[]; if(!Array.isArray(se[c.id])) se[c.id]=[]; });
+  const nT=d.categories.length, nP=d.categories.reduce((a,c)=>a+pl[c.id].length,0), nS=d.categories.reduce((a,c)=>a+se[c.id].length,0);
+  askConfirm('Restore this backup?',`It contains ${nT} team${nT!==1?'s':''}, ${nP} player${nP!==1?'s':''} and ${nS} session${nS!==1?'s':''}. This replaces everything currently in the app.`,'Restore',()=>{
+    try{ localStorage.setItem('bfc-data-before-restore', JSON.stringify(state)); }catch(e){}
+    state={categories:d.categories,players:pl,sessions:se};
+    saveData(); view={screen:'manage'}; render(); toast('Backup restored ✓');
+  });
+}
+function importData(inp){
+  const f=inp.files&&inp.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{ inp.value=''; restoreFromText(rd.result); };
+  rd.onerror=()=>toast('Could not read that file');
+  rd.readAsText(f);
+}
+function copyBackup(){
+  const t=JSON.stringify(state), done=()=>toast('Backup copied ✓');
+  if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(()=>fallbackCopy(t,done));
+  else fallbackCopy(t,done);
+}
+function openPasteRestore(){
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeNote()">
+    <div class="modal-sheet"><div class="modal-title">Paste backup</div>
+    <textarea id="restoreText" class="modal-input" rows="5" placeholder="Paste the copied backup text here"></textarea>
+    <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeNote()">Cancel</button>
+    <button class="primary-btn" style="flex:1" onclick="restoreFromText(document.getElementById('restoreText').value)">Restore</button></div></div></div>`;
+  render(true);
+}
+let deferredInstall=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredInstall=e; if(view.screen==='home') render(true); });
+window.addEventListener('appinstalled',()=>{ deferredInstall=null; });
+function installBanner(){
+  if(deferredInstall) return `<div class="install-banner"><span>Install BFC on your phone</span><button onclick="doInstall()">Install</button></div>`;
+  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const standalone=navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+  let hidden=false; try{ hidden=localStorage.getItem('bfc-ios-hint')==='1'; }catch(e){}
+  if(ios && !standalone && !hidden) return `<div class="install-banner"><span>📲 Install: tap Share ⬆︎ then “Add to Home Screen”</span><button onclick="hideIosHint()">Got it</button></div>`;
+  return '';
+}
+function hideIosHint(){ try{ localStorage.setItem('bfc-ios-hint','1'); }catch(e){} render(true); }
+function doInstall(){ if(!deferredInstall) return; deferredInstall.prompt(); deferredInstall.userChoice.finally(()=>{ deferredInstall=null; render(true); }); }
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
+try{ navigator.storage && navigator.storage.persist && navigator.storage.persist(); }catch(e){}
 
 // ---------- init ----------
 loadData();
