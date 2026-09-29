@@ -11,7 +11,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="BFC">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -942,17 +943,18 @@ function generateAttendance(){
   const presentPlayers = players.filter(p=>['present','late'].includes(view.statusMap[p.id]));
   const absentPlayers = players.filter(p=>view.statusMap[p.id]==='absent');
   const lines = [
-    `BFC ${cat.name} — ${view.stype||'Training'} Attendance`,
+    `⚽ *BFC ${cat.name} — Attendance*`,
     `📅 ${formatDateSlash(view.date)}`,
+    `🏷️ Session: ${view.stype||'Training'}`,
     ``,
-    `Present (${presentPlayers.length}):`,
-    ...presentPlayers.map(p=>p.name + (view.statusMap[p.id]==='late'?' (late)':''))
+    `✅ *Present (${presentPlayers.length})*`,
+    ...presentPlayers.map(p=>`• ${capName(p.name)}${view.statusMap[p.id]==='late'?' ⏰ (late)':''}`)
   ];
   if (cat.includeAbsent){
-    lines.push(``, `Absent (${absentPlayers.length}):`, ...absentPlayers.map(p=>p.name));
+    lines.push(``, `❌ *Absent (${absentPlayers.length})*`, ...absentPlayers.map(p=>`• ${capName(p.name)}`));
   }
   const noted = players.filter(p=>view.notes&&view.notes[p.id]);
-  if (noted.length) lines.push(``, `Notes:`, ...noted.map(p=>`${p.name}: ${view.notes[p.id]}`));
+  if (noted.length) lines.push(``, `📝 *Notes*`, ...noted.map(p=>`• ${capName(p.name)}: ${view.notes[p.id]}`));
   const text = lines.join('\n');
   setView({ screen:'generate', catId: view.catId, date: view.date, text });
 }
@@ -970,9 +972,9 @@ function renderGenerate(){
     </div>
   </div>
   <div class="content no-nav">
-    <div class="output-box" id="outputText">${esc(view.text)}</div>
+    <div class="output-box" id="outputText">${fmtWA(view.text)}</div>
     <button class="primary-btn" onclick="copyText()">📋 Copy Text</button>
-    <button class="secondary-btn" onclick="window.open('https://wa.me/?text='+encodeURIComponent(view.text))">💬 Send to WhatsApp</button>
+    <button class="secondary-btn" onclick="sendWhatsApp(view.text)">💬 Send to WhatsApp</button>
     <button class="secondary-btn" onclick="shareText()">📤 Share…</button>
     <button class="secondary-btn" onclick="navTo('home')">Done</button>
   </div>
@@ -1259,7 +1261,7 @@ function renderReport(){
     view.text=buildReportText(cat,label,rtype,sess,list,pct(pres,tot));
     body = list.length ? `<div class="scoreboard"><div><div class="score-main">${pct(pres,tot)}%</div><div class="score-label">Average attendance</div></div><div class="score-absent" style="color:var(--gold)">${sess.length}<small>Sessions</small></div></div>`
       + list.map(r=>{const v=pct(r.st.mp,r.st.mt); return row(r.p.name,v,v+'%',`${r.st.mp} of ${r.st.mt} sessions`);}).join('')
-      + `<button class="primary-btn" style="margin-top:8px" onclick="copyText()">📋 Copy report</button><button class="secondary-btn" onclick="window.open('https://wa.me/?text='+encodeURIComponent(view.text))">💬 Send to WhatsApp</button>`
+      + `<button class="primary-btn" style="margin-top:8px" onclick="copyText()">📋 Copy report</button><button class="secondary-btn" onclick="sendWhatsApp(view.text)">💬 Send to WhatsApp</button>`
       : `<div class="empty-state"><div class="icon">📊</div><h3>No sessions in ${label}</h3><p>Take attendance and this month's report will fill in.</p></div>`;
   } else {
     const list=rows.filter(r=>r.st.at>0).sort((a,b)=>b.st.cur-a.st.cur||b.st.ap/b.st.at-a.st.ap/a.st.at);
@@ -1314,22 +1316,21 @@ function openScheduleModal(catId){
     <div class="modal-sheet"><div class="modal-title">Training days</div>
       <div class="chips" id="dayChips">${[1,2,3,4,5,6,0].map(d=>`<button class="chip ${c.days&&c.days.includes(d)?'on':''}" data-d="${d}" onclick="this.classList.toggle('on')">${DAYS[d]}</button>`).join('')}</div>
       <input id="timeInput" type="time" class="modal-input" value="${c.time||'17:00'}">
-      <div class="confirm-text">Home shows a reminder on these days. Calendar alerts ring on your iPhone 1 hour and 15 minutes before.</div>
+      <div class="confirm-text">Pick the training days and time. You will be reminded 1 hour and 15 minutes before each training.</div>
       <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeModal()">Cancel</button><button class="primary-btn" style="flex:1" onclick="saveSchedule('${catId}')">Save</button></div>
-      <button class="secondary-btn" onclick="saveSchedule('${catId}',true)">📲 Save &amp; add Calendar alerts (1 hour + 15 min)</button>
+      <button class="primary-btn" style="margin-top:10px" onclick="saveSchedule('${catId}','cal')">📅 Save &amp; set reminder</button>
     </div></div>`;
   render(true);
 }
-function saveSchedule(catId,cal){
+function saveSchedule(catId,mode){
   const c=state.categories.find(x=>x.id===catId);
   const days=[...document.querySelectorAll('#dayChips .chip.on')].map(b=>+b.dataset.d);
-  if(cal && !days.length){ toast('Pick at least one day'); return; }
+  if(mode && !days.length){ toast('Pick at least one day'); return; }
   c.days=days;
   c.time=document.getElementById('timeInput').value||'17:00';
   saveData();
-  if(cal) addToCalendar(c);
   view.modal=null; render(true);
-  if(!cal) toast('Reminder saved ✓');
+  if(mode==='cal') calendarGuide(catId); else toast('Saved ✓');
 }
 function icsDate(d,t){ return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0')+'T'+t.replace(':','')+'00'; }
 function addToCalendar(c){
@@ -1360,6 +1361,28 @@ function reminderBanners(){
   }).join('');
 }
 document.addEventListener('visibilitychange',()=>{ if(!document.hidden && view.screen==='home' && !view.modal) render(true); });
+
+// ---------- WHATSAPP / INFO / PUSH ----------
+function fmtWA(t){ return esc(t).replace(/\*(.+?)\*/g,'<b>$1</b>'); }
+function sendWhatsApp(text){
+  const enc=encodeURIComponent(text);
+  try{ navigator.clipboard && navigator.clipboard.writeText(text); }catch(e){}
+  if(!/iphone|ipad|ipod|android/i.test(navigator.userAgent)){ window.open('https://wa.me/?text='+enc,'_blank'); return; }
+  location.href='whatsapp://send?text='+enc;
+  setTimeout(()=>{ if(!document.hidden) toast('WhatsApp did not open. The text is copied — open WhatsApp and paste it.',4500); },1800);
+}
+function showInfo(title,text){
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeNote()"><div class="modal-sheet"><div class="modal-title">${esc(title)}</div><div class="confirm-text" style="white-space:pre-line">${esc(text)}</div><div class="modal-btns"><button class="primary-btn" style="flex:1" onclick="closeNote()">OK</button></div></div></div>`;
+  render(true);
+}
+function calendarGuide(catId){
+  view.modal=`<div class="modal-overlay" onclick="if(event.target===this) closeNote()"><div class="modal-sheet"><div class="modal-title">Add to your Calendar</div>
+    <div class="confirm-text" style="white-space:pre-line">1. Tap “Continue”.\n2. Choose “Calendar” from the list. (Not there? Tap “Save to Files”, then open the saved file.)\n3. Tap “Add All” at the bottom of the screen.\n\nYour phone will then remind you 1 hour and 15 minutes before training.</div>
+    <div class="modal-btns"><button class="secondary-btn" style="flex:1" onclick="closeNote()">Cancel</button><button class="primary-btn" style="flex:1" onclick="continueCalendar('${catId}')">Continue</button></div></div></div>`;
+  render(true);
+}
+function continueCalendar(catId){ const c=state.categories.find(x=>x.id===catId); view.modal=null; render(true); if(c) addToCalendar(c); }
+function isStandalone(){ return navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); }
 
 // ---------- extras ----------
 function vib(){ try{ navigator.vibrate && navigator.vibrate(12); }catch(e){} }
@@ -1457,10 +1480,13 @@ window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredI
 window.addEventListener('appinstalled',()=>{ deferredInstall=null; });
 function installBanner(){
   if(deferredInstall) return `<div class="install-banner"><span>Install BFC on your phone</span><button onclick="doInstall()">Install</button></div>`;
-  const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
+  const ua=navigator.userAgent, ios=/iphone|ipad|ipod/i.test(ua), and=/android/i.test(ua);
   const standalone=navigator.standalone || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
   let hidden=false; try{ hidden=localStorage.getItem('bfc-ios-hint')==='1'; }catch(e){}
-  if(ios && !standalone && !hidden) return `<div class="install-banner"><span>📲 Install: tap Share ⬆︎ then “Add to Home Screen”</span><button onclick="hideIosHint()">Got it</button></div>`;
+  if(!standalone && !hidden){
+    if(ios) return `<div class="install-banner"><span>📲 Install: tap Share ⬆︎ then “Add to Home Screen”</span><button onclick="hideIosHint()">Got it</button></div>`;
+    if(and) return `<div class="install-banner"><span>📲 Install: tap ⋮ (top right) then “Install app”</span><button onclick="hideIosHint()">Got it</button></div>`;
+  }
   return '';
 }
 function hideIosHint(){ try{ localStorage.setItem('bfc-ios-hint','1'); }catch(e){} render(true); }
